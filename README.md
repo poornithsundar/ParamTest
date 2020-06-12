@@ -26,7 +26,7 @@ name, age
 What is the max limit for this semi optional params?
 1
 What are the request params given?(in single line with commas)
-
+{EMPTY STRING}
 
 OutPut:
 -------

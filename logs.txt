@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2020-06-15T11:43:45</date>
+  <millis>1592201625960</millis>
+  <sequence>0</sequence>
+  <logger>com.Validate_Params</logger>
+  <level>FINER</level>
+  <class>java.lang.String</class>
+  <method>equals</method>
+  <thread>1</thread>
+  <message>THROW</message>
+  <exception>
+    <message>com.CountException: Count of the semi optional params [cuty, state, country] is not satisfied. Wanted = 2. Given = 1</message>
+    <frame>
+      <class>com.Validate_Params</class>
+      <method>doSemiValidateParams</method>
+      <line>36</line>
+    </frame>
+    <frame>
+      <class>com.Validate_Params</class>
+      <method>main</method>
+      <line>82</line>
+    </frame>
+  </exception>
+</record>
+</log>

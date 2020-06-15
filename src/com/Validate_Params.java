@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,28 +14,22 @@ public class Validate_Params{
 	static Logger logger = Logger.getLogger(Validate_Params.class.getName());
 	static void doSemiValidateParams(List<String> requestParams, HashMap<List<String>,Integer> semiOptionalParamsList)throws Exception
 	{
-		FileHandler handler = new FileHandler("ParamTest-master/logs.txt");
-		logger.addHandler(handler);
-		logger.setLevel(Level.FINER); 
-		for(List<String> semiOptionalParams : semiOptionalParamsList.keySet())
+		for(Map.Entry<List<String>,Integer> entry :  semiOptionalParamsList.entrySet())
 		{
-			int max_count = semiOptionalParamsList.get(semiOptionalParams);
+			List<String> semiOptionalParams = entry.getKey();
+			int semiOptionalParams_limit = entry.getValue();
 			Set<String> semiExtraParams = semiOptionalParams.stream().filter(i -> requestParams.contains(i)).collect(Collectors.toSet());
-			int c = semiExtraParams.size();
-			if(c==0)
+			int semiOptionalParams_length = semiExtraParams.size();
+			if(semiOptionalParams_length==0 || semiOptionalParams_length==semiOptionalParams.size())
 			{
-				logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new CountException("Atleast one of the optional params are required.....!"));
-				throw new CountException("Atleast one of the optional params are required.....!");
+				String str = (semiOptionalParams_length==0)?"Atleast one of the optional params are required.....!":"All the optional params should not be given .....!";
+				logger.log(Level.SEVERE, str);
+				throw new Exception(str);
 			}
-			else if(c==semiOptionalParams.size())
+			else if(semiOptionalParams_length!=semiOptionalParams_limit)
 			{
-				logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new CountException("All the optional params should not be given .....!"));
-				throw new CountException("All the optional params should not be given .....!");
-			}
-			else if(c!=max_count)
-			{
-				logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new CountException("Count of the semi optional params "+semiOptionalParams.toString()+" is not satisfied. Wanted = "+max_count+". Given = "+c));
-				throw new CountException("Count of the semi optional params "+semiOptionalParams.toString()+" is not satisfied. Wanted = "+max_count+". Given = "+c);
+				logger.log(Level.SEVERE,"Count of the semi optional params "+semiOptionalParams.toString()+" is not satisfied. Wanted = "+semiOptionalParams_limit+". Given = "+semiOptionalParams_length);
+				throw new Exception("Count of the semi optional params "+semiOptionalParams.toString()+" is not satisfied. Wanted = "+semiOptionalParams_limit+". Given = "+semiOptionalParams_length);
 			}
 		}
 	}
@@ -42,9 +37,6 @@ public class Validate_Params{
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception
 	{
-		FileHandler handler = new FileHandler("ParamTest-master/logs.txt");
-		logger.addHandler(handler);
-		logger.setLevel(Level.FINER); 
 		Scanner sc = new Scanner(System.in);
 		List<String> request = new ArrayList<>();
 		HashMap<List<String>,Integer> semiOptional = new HashMap<>();
@@ -60,13 +52,13 @@ public class Validate_Params{
 				int count = Integer.parseInt(sc.nextLine());
 				if(params.size()==1 && params.get(0).isEmpty())
 				{
-					logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new InputException("Empty SemiOptional params given!"));
-					throw new InputException("Empty SemiOptional params given!");
+					logger.log(Level.SEVERE, "Empty SemiOptional params given!");
+					throw new Exception("Empty SemiOptional params given!");
 				}
 				else if(params.size()<=count || count==0)
 				{
-					logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new InputException("Wrong limit given for SemiOptional params!"));
-					throw new InputException("Wrong limit given for SemiOptional params!");
+					logger.log(Level.SEVERE, "Wrong limit given for SemiOptional params!");
+					throw new Exception("Wrong limit given for SemiOptional params!");
 				} 
 				else
 				{
@@ -83,14 +75,14 @@ public class Validate_Params{
 			}
 			else
 			{
-				logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new InputException("Empty request is not allowed...!"));
-				throw new InputException("Empty request is not allowed...!");
+				logger.log(Level.SEVERE, "Empty request is not allowed...!");				
+				throw new Exception("Empty request is not allowed...!");
 			}
 		}
 		else
 		{
-			logger.throwing(String.class.getName(),String.class.getMethods()[0].getName(),new InputException("Optional Params Count specified as 0...!"));
-			throw new InputException("Optional Params Count specified as 0...!");
+			logger.log(Level.SEVERE, "Optional Params Count specified as 0...!");
+			throw new Exception("Optional Params Count specified as 0...!");
 		}
 		sc.close();
 	}
